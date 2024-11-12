@@ -1,7 +1,6 @@
 import classes from "./MainNavigation.module.css";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 function MainNavigation() {
-  const param = useParams();
   return (
     <header className={classes.header}>
       <nav>
@@ -22,33 +21,6 @@ function MainNavigation() {
               end
             >
               EventPages
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={`/events/${param.eventid}`}
-              className={({ isActive }) => (isActive ? classes.active : "")}
-              end
-            >
-              EventDetailPage
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/events/new"}
-              className={({ isActive }) => (isActive ? classes.active : "")}
-              end
-            >
-              NewEventPage
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/events/:eventid/edit"}
-              className={({ isActive }) => (isActive ? classes.active : "")}
-              end
-            >
-              EditEventPage
             </NavLink>
           </li>
         </ul>
