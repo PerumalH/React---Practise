@@ -6,8 +6,9 @@ import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import NewEventPage from "./pages/NewEventPage.jsx";
 import EditEventPage from "./pages/EditEventPage.jsx";
-import EventsNavigation from "./components/EventsNavigation.js";
+
 import RootEvent from "./pages/RootEvent.jsx";
+import ErrorPage from "./pages/ErrorPage.jsx";
 // 1. Add five new (dummy) page components (content can be simple <h1> elements)
 //    - HomePage
 //    - EventsPage
@@ -31,13 +32,29 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       {
         path: "events",
         element: <RootEvent />,
         children: [
-          { index: true, element: <EventsPage /> },
+          {
+            index: true,
+            element: <EventsPage />,
+            loader: async () => {
+              const response = await fetch("http://localhost:8080/event");
+
+              if (!response.ok) {
+                throw new Response(
+                  JSON.stringify({ message: "Could Not fetch events" }),
+                  { status: 500 }
+                );
+              } else {
+                return response;
+              }
+            },
+          },
           { path: ":eventid", element: <EventDetailPage /> },
           { path: "new", element: <NewEventPage /> },
           { path: ":eventid/edit", element: <EditEventPage /> },
