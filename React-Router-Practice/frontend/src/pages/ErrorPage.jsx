@@ -6,7 +6,7 @@ const ErrorPage = () => {
   const error = useRouteError();
   const Message =
     error.status === 500
-      ? JSON.parse(error.data).message
+      ? error.data.message
       : "Could not find resource or page";
 
   return (

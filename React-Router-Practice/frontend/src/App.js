@@ -1,14 +1,15 @@
 // Challenge / Exercise
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, json, RouterProvider } from "react-router-dom";
 import Root from "./pages/Root";
 import HomePage from "./pages/HomePage";
 import EventsPage from "./pages/EventsPage";
-import EventDetailPage from "./pages/EventDetailPage";
+import EventDetailPage, { loader } from "./pages/EventDetailPage";
 import NewEventPage from "./pages/NewEventPage.jsx";
 import EditEventPage from "./pages/EditEventPage.jsx";
 
 import RootEvent from "./pages/RootEvent.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
+import { action } from "./utils/action.js";
 // 1. Add five new (dummy) page components (content can be simple <h1> elements)
 //    - HomePage
 //    - EventsPage
@@ -36,18 +37,22 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       {
-        path: "events",
+        path: "events/",
         element: <RootEvent />,
         children: [
           {
             index: true,
             element: <EventsPage />,
             loader: async () => {
-              const response = await fetch("http://localhost:8080/event");
+              const response = await fetch("http://localhost:8080/events");
 
               if (!response.ok) {
-                throw new Response(
-                  JSON.stringify({ message: "Could Not fetch events" }),
+                // throw new Response(
+                //   JSON.stringify({ message: "Could Not fetch events" }),
+                //   { status: 500 }
+                // );
+                throw json(
+                  { message: "Could Not fetch events" },
                   { status: 500 }
                 );
               } else {
@@ -55,9 +60,21 @@ const router = createBrowserRouter([
               }
             },
           },
-          { path: ":eventid", element: <EventDetailPage /> },
-          { path: "new", element: <NewEventPage /> },
-          { path: ":eventid/edit", element: <EditEventPage /> },
+          {
+            path: ":eventid",
+            id: "event-id",
+            loader: loader,
+            children: [
+              {
+                index: true,
+                element: <EventDetailPage />,
+                action: action,
+              },
+              { path: "edit", element: <EditEventPage />, action: action },
+            ],
+          },
+
+          { path: "new", element: <NewEventPage />, action: action },
         ],
       },
     ],
