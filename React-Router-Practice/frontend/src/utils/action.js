@@ -43,3 +43,22 @@ export async function action({ request, params }) {
 
   return redirect("/events");
 }
+
+export const throttle = (fun, delay) => {
+  let timer;
+  return (...arg) => {
+    if (!timer) {
+      fun(...arg);
+      timer = setTimeout(() => (timer = null), delay);
+    }
+  };
+};
+
+export const debounce = (fun, delay) => {
+  let timer;
+
+  return (...arg) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fun(...arg), delay);
+  };
+};
