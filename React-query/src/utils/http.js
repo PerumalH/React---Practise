@@ -89,3 +89,5 @@ export async function fetchEvent({ id, signal }) {
 
   return event;
 }
+
+//completed react query
